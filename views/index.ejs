@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rexona x FIFA Booth</title>
+    <style>
+      /* Reset bawaan */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+
+      /* flex items-center justify-center min-h-screen w-full bg-black */
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100%;
+        background-color: #000000;
+      }
+
+      /* relative h-screen aspect-[9/16] overflow-hidden bg-[#06241a] flex flex-col items-center */
+      .main-container {
+        position: relative;
+        height: 100vh;
+        aspect-ratio: 9 / 16;
+        overflow: hidden;
+        background-color: #06241a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* --- LAYER 1: BACKGROUND TEMA --- */
+      /* absolute inset-0 z-0 */
+      .bg-layer {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 0;
+      }
+
+      /* w-full h-full object-cover opacity-90 */
+      .bg-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.9;
+        background-color: #06241a;
+      }
+
+      /* absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#06241a] to-transparent */
+      .bg-gradient {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 50%;
+        background: linear-gradient(to top, #06241a, transparent);
+      }
+
+      /* --- LAYER 2: KONTEN UTAMA --- */
+      /* relative z-10 flex flex-col items-center w-full h-full flex-1 pt-12 pb-8 */
+      .content-layer {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        flex: 1;
+        padding-top: 3rem;
+        padding-bottom: 2rem;
+      }
+
+      .logo-container {
+        margin-bottom: 4rem;
+      }
+
+      .img-auto {
+        max-width: none;
+        width: auto;
+        height: auto;
+      }
+
+      /* Tombol Take Photo (Sudah Diperbesar) */
+      .btn-take-photo {
+        display: flex;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 9999px;
+        padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+        gap: 2rem; 
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        text-decoration: none;
+        z-index: 20;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .btn-take-photo:hover {
+        transform: scale(1.05);
+      }
+
+      .btn-take-photo:active {
+        transform: scale(0.95);
+      }
+
+      .btn-inner {
+        background-color: #ffffff;
+        border-radius: 9999px;
+        padding: 1.25rem 3.5rem;
+        box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+      }
+
+      .btn-text {
+        color: #103a2f;
+        font-weight: 800;
+        font-size: 1.85rem;
+        letter-spacing: -0.025em;
+      }
+
+      .btn-icon {
+        color: #ffffff;
+        transition: transform 0.3s ease;
+      }
+
+      .btn-take-photo:hover .btn-icon {
+        transform: translateX(0.35rem);
+      }
+
+      .spacer {
+        flex: 1;
+      }
+
+      .bottom-area {
+        width: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .players-container {
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 10;
+      }
+
+      .drop-shadow-2xl {
+        filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.15));
+      }
+
+      .hashtag-container {
+        position: relative;
+        z-index: 20;
+      }
+
+      .drop-shadow-lg {
+        filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.04))
+          drop-shadow(0 4px 3px rgba(0, 0, 0, 0.1));
+      }
+    </style>
+  </head>
+  <body>
+    <main class="main-container">
+      <div class="bg-layer">
+        <img src="/images/bg.png" alt="Background" class="bg-image" />
+        <div class="bg-gradient"></div>
+      </div>
+
+      <div class="content-layer">
+        <div class="logo-container">
+          <img src="/images/fifa.png" alt="FIFA x Rexona" class="img-auto" />
+        </div>
+
+        <a href="/booth" class="btn-take-photo">
+          <div class="btn-inner">
+            <span class="btn-text">Take photo</span>
+          </div>
+          <svg
+            class="btn-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
+
+        <div class="spacer"></div>
+
+        <div class="bottom-area">
+          <div class="players-container">
+            <img
+              src="/images/comp1.png"
+              alt="Football Players"
+              class="img-auto drop-shadow-2xl"
+            />
+          </div>
+
+          <div class="hashtag-container">
+            <img
+              src="/images/setia.png"
+              alt="#SETIASETIAAAPSAAT"
+              class="img-auto drop-shadow-lg"
+            />
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

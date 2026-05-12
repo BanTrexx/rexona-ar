@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rexona x FIFA Booth</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100%;
+        background-color: #000000;
+      }
+
+      .main-container {
+        position: relative;
+        height: 100vh;
+        aspect-ratio: 9 / 16;
+        overflow: hidden;
+        background-color: #06241a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .bg-layer {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 0;
+      }
+
+      .bg-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.9;
+        background-color: #06241a;
+      }
+
+      .bg-gradient {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 50%;
+        background: linear-gradient(to top, #06241a, transparent);
+      }
+
+      .content-layer {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        flex: 1;
+      }
+
+      .logo-container {
+        position: absolute;
+        top: 97px;
+        left: 132px;
+      }
+
+      .btn-container {
+        position: absolute;
+        top: 1464px;
+        left: 245px;
+      }
+
+      .backbtn {
+        position: absolute;
+        top: 1750px;
+        left: 373px;
+      }
+
+      .img-auto {
+        max-width: none;
+        width: auto;
+        height: auto;
+      }
+
+      .drop-shadow-2xl {
+        filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.15));
+      }
+
+      .drop-shadow-lg {
+        filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.04))
+          drop-shadow(0 4px 3px rgba(0, 0, 0, 0.1));
+      }
+
+      #obs-stream {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 80px;
+        z-index: -1;
+        background-color: #000000;
+      }
+
+      .camera-box {
+        height: 1381px;
+        width: 776.35px;
+
+        position: absolute;
+        left: 151.33px;
+        top: 310px;
+        border-radius: 80px;
+        border: 2px solid #50b5ff;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        padding-bottom: 60px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="main-container">
+      <div class="bg-layer">
+        <img src="/images/bg.png" alt="Background" class="bg-image" />
+        <div class="bg-gradient"></div>
+      </div>
+
+      <div class="content-layer">
+        <div class="logo-container">
+          <img src="/images/header.png" alt="FIFA x Rexona" class="img-auto" />
+        </div>
+        <div class="camera-box">
+          <video id="obs-stream" autoplay playsinline></video>
+        </div>
+        <div class="btn-container">
+          <img src="/images/photo.png" class="img-auto" />
+        </div>
+        <div class="backbtn">
+          <a href="/select">
+            <img src="/images/back.png" class="img-auto" />
+          </a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
+
+<script>
+  async function startStreaming() {
+    try {
+      // Meminta daftar perangkat media
+      const devices = await navigator.mediaDevices.enumerateDevices();
+
+      // Cari perangkat yang namanya mengandung "OBS Virtual Camera"
+      const obsCamera = devices.find(
+        (device) =>
+          device.label.includes("OBS Virtual Camera") ||
+          device.label.includes("OBS-Camera"),
+      );
+
+      const constraints = {
+        video: {
+          deviceId: obsCamera ? { exact: obsCamera.deviceId } : undefined,
+          width: { ideal: 776.35 },
+          height: { ideal: 1381 },
+        },
+      };
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      const videoElement = document.getElementById("obs-stream");
+
+      videoElement.srcObject = stream;
+      console.log("✅ Streaming OBS dimulai!");
+    } catch (error) {
+      console.error("❌ Gagal akses kamera:", error);
+      alert("Pastikan 'Start Virtual Camera' di OBS sudah diklik!");
+    }
+  }
+
+  // Jalankan fungsi saat halaman dimuat
+  window.onload = startStreaming;
+</script>

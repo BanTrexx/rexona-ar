@@ -144,6 +144,17 @@
         top: 1179px;
         left: 590px;
       }
+
+      .homebtn {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 100;
+        background-color: transparent;
+        border: none;
+      }
     </style>
   </head>
   <body>
@@ -152,6 +163,8 @@
         <img src="/images/bg.png" alt="Background" class="bg-image" />
         <div class="bg-gradient"></div>
       </div>
+
+      <button class="homebtn" onclick="window.location.href = '/'"></button>
 
       <div class="content-layer">
         <div class="logo-container">
@@ -167,7 +180,6 @@
         </div>
 
         <div class="selector">
-          <!-- Tambahkan class 'btn-scene' dan data-scene untuk nama scene di OBS -->
           <div class="santiago btn-scene" data-scene="santiago">
             <img src="/images/btn/santiago.png" alt="select" class="img-auto" />
           </div>
@@ -237,6 +249,7 @@
     item.addEventListener("click", () => {
       const targetScene = item.getAttribute("data-scene");
       changeScene(targetScene);
+      window.location.href = "/photo";
     });
   });
 

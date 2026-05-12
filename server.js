@@ -24,8 +24,8 @@ app.get("/select", (req, res) => {
   res.render("select");
 });
 
-app.get("/booth", (req, res) => {
-  res.send("📸 Halaman Kamera belum dibuat cuy, semangat ngerjainnya!");
+app.get("/photo", (req, res) => {
+  res.render("photo");
 });
 
 app.get("/api/status", (req, res) => {

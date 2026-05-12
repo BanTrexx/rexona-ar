@@ -245,23 +245,59 @@
       setTimeout(() => overlay.remove(), 500);
     }, 50);
 
-    if (frameImage.complete) {
-      canvas.width = frameImage.width;
-      canvas.height = frameImage.height;
+    const ctx = canvas.getContext("2d");
+
+    if (frameImage.complete && frameImage.naturalWidth > 0) {
+      canvas.width = frameImage.naturalWidth;
+      canvas.height = frameImage.naturalHeight;
     } else {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
     }
 
-    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
 
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const vWidth = video.videoWidth;
+    const vHeight = video.videoHeight;
+    const targetRatio = canvas.width / canvas.height;
+    const videoRatio = vWidth / vHeight;
+
+    let sWidth, sHeight, sx, sy;
+
+    if (videoRatio > targetRatio) {
+      sHeight = vHeight;
+      sWidth = vHeight * targetRatio;
+      sx = (vWidth - sWidth) / 2;
+      sy = 0;
+    } else {
+      sWidth = vWidth;
+      sHeight = vWidth / targetRatio;
+      sx = 0;
+      sy = (vHeight - sHeight) / 2;
+    }
+
+    ctx.drawImage(
+      video,
+      sx,
+      sy,
+      sWidth,
+      sHeight,
+      0,
+      0,
+      canvas.width,
+      canvas.height,
+    );
 
     if (frameImage.complete) {
-      ctx.drawImage(frameImage, 0, 0, canvas.width, canvas.height);
-      console.log("✅ Frame berhasil ditempel!");
-    } else {
-      console.warn("⚠️ Frame belum selesai dimuat saat jepret.");
+      const scale = 1.02;
+      const drawWidth = canvas.width * scale;
+      const drawHeight = canvas.height * scale;
+      const offsetX = (canvas.width - drawWidth) / 2;
+      const offsetY = (canvas.height - drawHeight) / 2;
+
+      ctx.drawImage(frameImage, offsetX, offsetY, drawWidth, drawHeight);
+      console.log("✅ Video standar, Frame digedein 2%!");
     }
 
     const dataURL = canvas.toDataURL("image/png");

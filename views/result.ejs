@@ -107,6 +107,148 @@
         background-image: url("/frame/vini.png");
         border-radius: 20px;
       }
+
+      .gallery-sidebar {
+        position: absolute;
+        top: 374px;
+        left: 760px;
+        width: 300px;
+        height: 1276px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        background: rgba(6, 36, 26, 0.8);
+        border: 2px solid #50b5ff;
+        border-radius: 20px;
+      }
+
+      .gallery-title {
+        color: #f1d382;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+      }
+
+      .scroll-container {
+        width: 100%;
+        flex-grow: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding-right: 10px;
+        scrollbar-width: thin;
+      }
+
+      .scroll-container::-webkit-scrollbar {
+        width: 8px;
+      }
+      .scroll-container::-webkit-scrollbar-thumb {
+        background: #50b5ff;
+        border-radius: 10px;
+      }
+
+      .thumb-item {
+        width: 100%;
+        aspect-ratio: 9 / 16;
+        border: 2px solid transparent;
+        flex-shrink: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .thumb-item.active {
+        border-color: #50b5ff;
+        box-shadow: 0 0 10px #50b5ff;
+      }
+
+      .thumb-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .download-btn {
+        margin-top: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: white;
+      }
+
+      .modal-content {
+        background: #06241a;
+        padding: 60px; /* Padding diperbesar */
+        border-radius: 40px; /* Border radius diperhalus */
+        border: 4px solid #50b5ff;
+        text-align: center;
+        min-width: 700px; /* Diperbesar dari 350px ke 700px */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px; /* Jarak antar elemen diperlebar */
+      }
+
+      /* Status Text diperbesar */
+      #modalStatus {
+        font-size: 32px; /* Font lebih besar agar terbaca */
+        font-weight: bold;
+      }
+
+      .loader {
+        border: 10px solid #f3f3f3;
+        border-top: 10px solid #50b5ff;
+        border-radius: 50%;
+        width: 100px; /* Diperbesar dari 50px */
+        height: 100px; /* Diperbesar dari 50px */
+        animation: spin 1s linear infinite;
+      }
+
+      .close-modal {
+        margin-top: 20px;
+        padding: 20px 40px; /* Button lebih besar */
+        font-size: 24px;
+        background: #50b5ff;
+        border: none;
+        border-radius: 10px;
+        color: #000;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      #qrcode {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+      }
     </style>
   </head>
   <body>
@@ -123,6 +265,14 @@
 
         <div class="photo-container"></div>
 
+        <div class="gallery-sidebar">
+          <div class="gallery-title">SELECT PHOTOS<br />TO DOWNLOAD</div>
+          <div class="scroll-container" id="gallery-list"></div>
+          <button class="download-btn" id="btn-download">
+            <img src="/images/download.png" class="img-auto" alt="Download" />
+          </button>
+        </div>
+
         <div class="backbtn">
           <a href="/">
             <img src="/images/back.png" class="img-auto" />
@@ -130,23 +280,101 @@
         </div>
       </div>
     </main>
+
+    <div id="downloadModal" class="modal-overlay">
+      <div class="modal-content">
+        <div id="modalStatus">Mempersiapkan Foto...</div>
+        <div id="modalLoader" class="loader"></div>
+        <div id="qrcode" style="display: none"></div>
+        <button id="closeModal" class="close-modal" style="display: none">
+          Tutup
+        </button>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <script>
       window.addEventListener('DOMContentLoaded', (event) => {
-        const photos = <%- JSON.stringify(photos) %>;
+        const photos = <%- JSON.stringify(photos || []) %>;
+        const date = "<%= date %>";
+        const photoContainer = document.querySelector('.photo-container');
+        const galleryList = document.getElementById('gallery-list');
 
-        if (photos && photos.length > 0) {
-          const latestPhoto = photos[0];
+        const modal = document.getElementById('downloadModal');
+        const modalStatus = document.getElementById('modalStatus');
+        const modalLoader = document.getElementById('modalLoader');
+        const qrcodeContainer = document.getElementById('qrcode');
+        const btnCloseModal = document.getElementById('closeModal');
 
-          const photoContainer = document.querySelector('.photo-container');
+        let activeFileName = photos.length > 0 ? photos[0].fileName : null;
 
-          if (photoContainer) {
-            photoContainer.style.backgroundImage = `url('${latestPhoto.url}')`;
+        if (photos.length > 0) {
+          photoContainer.style.backgroundImage = `url('${photos[0].url}')`;
 
-            console.log("Menampilkan foto terbaru:", latestPhoto.url);
-          }
-        } else {
-          console.log("Tidak ada foto untuk hari ini.");
+          photos.forEach((photo, index) => {
+            const item = document.createElement('div');
+            item.className = `thumb-item ${index === 0 ? 'active' : ''}`;
+            item.innerHTML = `<img src="${photo.url}" alt="Photo">`;
+
+            item.onclick = () => {
+              document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
+              item.classList.add('active');
+              photoContainer.style.backgroundImage = `url('${photo.url}')`;
+              activeFileName = photo.fileName;
+            };
+            galleryList.appendChild(item);
+          });
         }
+
+        document.getElementById('btn-download').onclick = async () => {
+          if (!activeFileName) return alert("Pilih foto dulu cuy!");
+
+          modal.style.display = 'flex';
+          modalStatus.innerText = "Mengupload ke Google Drive...";
+          modalLoader.style.display = 'block';
+          qrcodeContainer.style.display = 'none';
+          qrcodeContainer.innerHTML = "";
+          btnCloseModal.style.display = 'none';
+
+          try {
+            const response = await fetch("/api/upload-drive", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                fileName: activeFileName,
+                folderName: date
+              }),
+            });
+
+            const result = await response.json();
+
+            if (result.status === "success") {
+              modalStatus.innerText = "Selesai! Scan untuk Download:";
+              modalLoader.style.display = 'none';
+              qrcodeContainer.style.display = 'block';
+              btnCloseModal.style.display = 'block';
+
+              new QRCode(qrcodeContainer, {
+                text: result.driveUrl,
+                width: 400,  // Diperbesar dari 200 ke 400
+                height: 400, // Diperbesar dari 200 ke 400
+                correctLevel : QRCode.CorrectLevel.H // Opsional: High error correction agar lebih mudah di-scan
+              });
+            } else {
+              throw new Error(result.message);
+            }
+          } catch (err) {
+            console.error(err);
+            modalStatus.innerText = "Gagal: " + err.message;
+            modalLoader.style.display = 'none';
+            btnCloseModal.style.display = 'block';
+          }
+        };
+
+        btnCloseModal.onclick = () => {
+          modal.style.display = 'none';
+        };
       });
     </script>
   </body>

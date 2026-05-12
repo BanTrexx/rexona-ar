@@ -219,7 +219,6 @@
 
   async function connectOBS() {
     try {
-      // Pastikan menggunakan ws:// BUKAN wss:// jika di localhost
       await obs.connect("ws://127.0.0.1:4455", "PASSWORD_ANDA");
       console.log("✅ Terhubung ke OBS!");
       isConnected = true;
@@ -229,7 +228,6 @@
   }
 
   async function changeScene(sceneName) {
-    // Validasi apakah socket sudah siap
     if (!isConnected) {
       console.warn("⚠️ Belum terhubung! Mencoba menyambungkan ulang...");
       await connectOBS();
@@ -244,15 +242,13 @@
     }
   }
 
-  // Inisialisasi Event Listener
   document.querySelectorAll(".btn-scene").forEach((item) => {
     item.addEventListener("click", () => {
       const targetScene = item.getAttribute("data-scene");
       changeScene(targetScene);
-      window.location.href = "/photo";
+      window.location.href = `/photo/${targetScene}`;
     });
   });
 
-  // Jalankan koneksi
   connectOBS();
 </script>

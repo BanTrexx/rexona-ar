@@ -20,6 +20,10 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
+app.get("/select", (req, res) => {
+  res.render("select");
+});
+
 app.get("/booth", (req, res) => {
   res.send("📸 Halaman Kamera belum dibuat cuy, semangat ngerjainnya!");
 });

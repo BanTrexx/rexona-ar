@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rexona x FIFA Booth</title>
+    <script src="https://cdn.jsdelivr.net/npm/obs-websocket-js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100%;
+        background-color: #000000;
+      }
+
+      .main-container {
+        position: relative;
+        height: 100vh;
+        aspect-ratio: 9 / 16;
+        overflow: hidden;
+        background-color: #06241a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .bg-layer {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 0;
+      }
+
+      .bg-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.9;
+        background-color: #06241a;
+      }
+
+      .bg-gradient {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 50%;
+        background: linear-gradient(to top, #06241a, transparent);
+      }
+
+      .content-layer {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        flex: 1;
+      }
+
+      .logo-container {
+        position: absolute;
+        top: 97px;
+        left: 164px;
+      }
+
+      .select-container {
+        position: absolute;
+        top: 410px;
+        left: 161px;
+      }
+
+      .img-auto {
+        max-width: none;
+        width: auto;
+        height: auto;
+      }
+
+      .spacer {
+        flex: 1;
+      }
+
+      .bottom-area {
+        width: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .drop-shadow-2xl {
+        filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.15));
+      }
+
+      .hashtag-container {
+        position: absolute;
+        top: auto;
+        bottom: 90px;
+        z-index: 20;
+      }
+
+      .drop-shadow-lg {
+        filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.04))
+          drop-shadow(0 4px 3px rgba(0, 0, 0, 0.1));
+      }
+
+      .santiago {
+        position: absolute;
+        top: 310px;
+        left: 590px;
+      }
+      .enzo {
+        position: absolute;
+        top: 736px;
+        left: 159px;
+      }
+      .palmer {
+        position: absolute;
+        top: 736px;
+        left: 590px;
+      }
+      .vini {
+        position: absolute;
+        top: 1179px;
+        left: 159px;
+      }
+      .pulisic {
+        position: absolute;
+        top: 1179px;
+        left: 590px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="main-container">
+      <div class="bg-layer">
+        <img src="/images/bg.png" alt="Background" class="bg-image" />
+        <div class="bg-gradient"></div>
+      </div>
+
+      <div class="content-layer">
+        <div class="logo-container">
+          <img
+            src="/images/fifa kcil.png"
+            alt="FIFA x Rexona"
+            class="img-auto"
+          />
+        </div>
+
+        <div class="select-container">
+          <img src="/images/select.png" alt="select" class="img-auto" />
+        </div>
+
+        <div class="selector">
+          <!-- Tambahkan class 'btn-scene' dan data-scene untuk nama scene di OBS -->
+          <div class="santiago btn-scene" data-scene="santiago">
+            <img src="/images/btn/santiago.png" alt="select" class="img-auto" />
+          </div>
+          <div class="enzo btn-scene" data-scene="enzo">
+            <img src="/images/btn/enzo.png" alt="select" class="img-auto" />
+          </div>
+          <div class="palmer btn-scene" data-scene="palmer">
+            <img src="/images/btn/palmer.png" alt="select" class="img-auto" />
+          </div>
+          <div class="vini btn-scene" data-scene="vini">
+            <img src="/images/btn/vini.png" alt="select" class="img-auto" />
+          </div>
+          <div class="pulisic btn-scene" data-scene="pulisic">
+            <img src="/images/btn/pulisic.png" alt="select" class="img-auto" />
+          </div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="bottom-area">
+          <div class="hashtag-container">
+            <img
+              src="/images/setia.png"
+              alt="#SETIASETIAAAPSAAT"
+              class="img-auto drop-shadow-lg"
+            />
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
+
+<script>
+  const obs = new OBSWebSocket();
+  let isConnected = false;
+
+  async function connectOBS() {
+    try {
+      // Pastikan menggunakan ws:// BUKAN wss:// jika di localhost
+      await obs.connect("ws://127.0.0.1:4455", "PASSWORD_ANDA");
+      console.log("✅ Terhubung ke OBS!");
+      isConnected = true;
+    } catch (error) {
+      console.error("❌ Gagal terhubung ke OBS:", error.code, error.message);
+    }
+  }
+
+  async function changeScene(sceneName) {
+    // Validasi apakah socket sudah siap
+    if (!isConnected) {
+      console.warn("⚠️ Belum terhubung! Mencoba menyambungkan ulang...");
+      await connectOBS();
+      if (!isConnected) return;
+    }
+
+    try {
+      await obs.call("SetCurrentProgramScene", { sceneName: sceneName });
+      console.log(`🚀 Scene pindah ke: ${sceneName}`);
+    } catch (error) {
+      console.error("❌ Gagal pindah scene:", error.message);
+    }
+  }
+
+  // Inisialisasi Event Listener
+  document.querySelectorAll(".btn-scene").forEach((item) => {
+    item.addEventListener("click", () => {
+      const targetScene = item.getAttribute("data-scene");
+      changeScene(targetScene);
+    });
+  });
+
+  // Jalankan koneksi
+  connectOBS();
+</script>

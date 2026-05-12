@@ -286,12 +286,13 @@
       const result = await response.json();
 
       if (result.status === "success") {
-        console.log("Mantap! Cek foldernya:", result.url);
+        console.log("Mantap! Foto tersimpan di:", result.url);
+        window.location.href = "/result";
       }
     } catch (err) {
       console.error("Gagal kirim ke server:", err);
       alert(
-        "Gagal menyimpan foto. Pastikan server sudah diizinkan menerima file besar.",
+        "Gagal menyimpan foto. Pastikan server sudah diizinkan menerima file besar (limit 50mb).",
       );
     }
   }

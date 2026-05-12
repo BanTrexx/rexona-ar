@@ -45,7 +45,32 @@ app.get("/select", (req, res) => {
 });
 
 app.get("/result", (req, res) => {
-  res.render("result");
+  const today = new Date().toISOString().split("T")[0];
+  const folderPath = path.join(__dirname, "public", "result", today);
+
+  let filesList = [];
+
+  if (fs.existsSync(folderPath)) {
+    try {
+      const files = fs.readdirSync(folderPath);
+
+      filesList = files
+        .filter((file) => file.endsWith(".png"))
+        .map((file) => ({
+          fileName: file,
+          url: `/result/${today}/${file}`,
+        }));
+
+      filesList.sort((a, b) => b.fileName.localeCompare(a.fileName));
+    } catch (err) {
+      console.error("Gagal membaca folder:", err);
+    }
+  }
+
+  res.render("result", {
+    photos: filesList,
+    date: today,
+  });
 });
 
 app.get("/photo/:sceneName", (req, res) => {
@@ -104,39 +129,69 @@ app.post("/api/save-photo", async (req, res) => {
       .json({ status: "error", message: "Gak ada gambarnya!" });
   }
 
+  const today = new Date().toISOString().split("T")[0];
+
+  const subFolder = path.join(__dirname, "public", "result", today);
+
+  if (!fs.existsSync(subFolder)) {
+    fs.mkdirSync(subFolder, { recursive: true });
+  }
+
   const base64Data = image.replace(/^data:image\/png;base64,/, "");
   const fileName = `result_${Date.now()}.png`;
-  const filePath = path.join(__dirname, "public", "result", fileName);
+  const filePath = path.join(subFolder, fileName);
 
-  const dir = path.join(__dirname, "public", "result");
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-
-  fs.writeFile(filePath, base64Data, "base64", async (err) => {
+  fs.writeFile(filePath, base64Data, "base64", (err) => {
     if (err) {
+      console.error(err);
       return res
         .status(500)
         .json({ status: "error", message: "Gagal simpan lokal" });
     }
 
-    try {
-      const driveData = await uploadToDrive(filePath, fileName);
-
-      res.json({
-        status: "success",
-        message: "Foto berhasil disimpan di lokal & Drive!",
-        url: `/result/${fileName}`,
-        driveUrl: driveData.webViewLink,
-        driveId: driveData.id,
-      });
-    } catch (driveErr) {
-      console.error("Drive Upload Error:", driveErr);
-      res.json({
-        status: "partial_success",
-        message: "Simpan lokal ok, tapi gagal ke Drive. Pastikan sudah /auth",
-        url: `/result/${fileName}`,
-      });
-    }
+    res.json({
+      status: "success",
+      message: `Foto berhasil disimpan di folder harian (${today})!`,
+      fileName: fileName,
+      folderName: today,
+      url: `/result/${today}/${fileName}`,
+    });
   });
+});
+
+app.post("/api/upload-drive", async (req, res) => {
+  const { fileName, folderName } = req.body;
+
+  if (!fileName || !folderName) {
+    return res
+      .status(400)
+      .json({ status: "error", message: "Data tidak lengkap!" });
+  }
+
+  const filePath = path.join(
+    __dirname,
+    "public",
+    "result",
+    folderName,
+    fileName,
+  );
+
+  if (!fs.existsSync(filePath)) {
+    return res
+      .status(404)
+      .json({ status: "error", message: "File tidak ditemukan" });
+  }
+
+  try {
+    const driveData = await uploadToDrive(filePath, fileName);
+    res.json({
+      status: "success",
+      message: "Berhasil upload dari folder harian ke Drive!",
+      driveUrl: driveData.webViewLink,
+    });
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
 });
 
 app.listen(PORT, () => {

@@ -96,6 +96,17 @@
         top: 1750px;
         left: 373px;
       }
+
+      .photo-container {
+        position: absolute;
+        top: 374px;
+        left: 23px;
+        width: 719px;
+        height: 1276px;
+        background-size: cover;
+        background-image: url("/frame/vini.png");
+        border-radius: 20px;
+      }
     </style>
   </head>
   <body>
@@ -110,6 +121,8 @@
           <img src="/images/header1.png" class="img-auto" />
         </div>
 
+        <div class="photo-container"></div>
+
         <div class="backbtn">
           <a href="/">
             <img src="/images/back.png" class="img-auto" />
@@ -117,5 +130,24 @@
         </div>
       </div>
     </main>
+    <script>
+      window.addEventListener('DOMContentLoaded', (event) => {
+        const photos = <%- JSON.stringify(photos) %>;
+
+        if (photos && photos.length > 0) {
+          const latestPhoto = photos[0];
+
+          const photoContainer = document.querySelector('.photo-container');
+
+          if (photoContainer) {
+            photoContainer.style.backgroundImage = `url('${latestPhoto.url}')`;
+
+            console.log("Menampilkan foto terbaru:", latestPhoto.url);
+          }
+        } else {
+          console.log("Tidak ada foto untuk hari ini.");
+        }
+      });
+    </script>
   </body>
 </html>

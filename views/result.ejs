@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rexona x FIFA Booth</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100%;
+        background-color: #000000;
+      }
+
+      .main-container {
+        position: relative;
+        height: 100vh;
+        aspect-ratio: 9 / 16;
+        overflow: hidden;
+        background-color: #06241a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .bg-layer {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 0;
+      }
+
+      .bg-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.9;
+      }
+
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;
+        z-index: 100;
+        background-color: #000;
+      }
+
+      .content-layer {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        flex: 1;
+      }
+
+      .logo-container {
+        position: absolute;
+        top: 84px;
+        left: 63px;
+      }
+
+      .btn-container {
+        position: absolute;
+        top: 669px;
+        left: 245px;
+      }
+
+      .img-auto {
+        max-width: none;
+        width: auto;
+        height: auto;
+      }
+
+      .backbtn {
+        position: absolute;
+        top: 1750px;
+        left: 373px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="main-container">
+      <div class="bg-layer">
+        <img src="/images/bg1.png" alt="Background" class="bg-image" />
+        <div class="overlay"></div>
+      </div>
+
+      <div class="content-layer">
+        <div class="logo-container">
+          <img src="/images/header1.png" class="img-auto" />
+        </div>
+
+        <div class="backbtn">
+          <a href="/">
+            <img src="/images/back.png" class="img-auto" />
+          </a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

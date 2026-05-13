@@ -75,8 +75,8 @@
 
       .logo-container {
         position: absolute;
-        top: 84px;
-        left: 63px;
+        top: 104px;
+        left: 144px;
       }
 
       .btn-container {
@@ -197,20 +197,19 @@
 
       .modal-content {
         background: #06241a;
-        padding: 60px; /* Padding diperbesar */
-        border-radius: 40px; /* Border radius diperhalus */
+        padding: 60px;
+        border-radius: 40px;
         border: 4px solid #50b5ff;
         text-align: center;
-        min-width: 700px; /* Diperbesar dari 350px ke 700px */
+        min-width: 700px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 40px; /* Jarak antar elemen diperlebar */
+        gap: 40px;
       }
 
-      /* Status Text diperbesar */
       #modalStatus {
-        font-size: 32px; /* Font lebih besar agar terbaca */
+        font-size: 32px;
         font-weight: bold;
       }
 
@@ -218,14 +217,14 @@
         border: 10px solid #f3f3f3;
         border-top: 10px solid #50b5ff;
         border-radius: 50%;
-        width: 100px; /* Diperbesar dari 50px */
-        height: 100px; /* Diperbesar dari 50px */
+        width: 100px;
+        height: 100px;
         animation: spin 1s linear infinite;
       }
 
       .close-modal {
         margin-top: 20px;
-        padding: 20px 40px; /* Button lebih besar */
+        padding: 20px 40px;
         font-size: 24px;
         background: #50b5ff;
         border: none;
@@ -260,7 +259,7 @@
 
       <div class="content-layer">
         <div class="logo-container">
-          <img src="/images/header1.png" class="img-auto" />
+          <img src="/images/header2.png" class="img-auto" />
         </div>
 
         <div class="photo-container"></div>
@@ -357,9 +356,9 @@
 
               new QRCode(qrcodeContainer, {
                 text: result.driveUrl,
-                width: 400,  // Diperbesar dari 200 ke 400
-                height: 400, // Diperbesar dari 200 ke 400
-                correctLevel : QRCode.CorrectLevel.H // Opsional: High error correction agar lebih mudah di-scan
+                width: 400,
+                height: 400,
+                correctLevel : QRCode.CorrectLevel.H
               });
             } else {
               throw new Error(result.message);
@@ -374,6 +373,7 @@
 
         btnCloseModal.onclick = () => {
           modal.style.display = 'none';
+          window.location.href = `/`;
         };
       });
     </script>

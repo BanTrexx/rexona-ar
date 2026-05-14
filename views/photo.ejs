@@ -147,17 +147,20 @@
           <img src="/images/header2.png" alt="FIFA x Rexona" class="img-auto" />
         </div>
         <div class="camera-box">
-          <video id="obs-stream" autoplay playsinline></video>
           <div
             id="countdown"
             style="
               position: absolute;
-              font-size: 100px;
+              font-size: 150px;
               color: white;
               display: none;
               z-index: 10;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
             "
           ></div>
+          <video id="obs-stream" autoplay playsinline></video>
         </div>
         <canvas id="capture-canvas" style="display: none"></canvas>
         <div class="photo-btn">
